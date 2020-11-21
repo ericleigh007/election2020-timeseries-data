@@ -25,5 +25,5 @@ You may download the dataset included in the repository or compile it yourself b
 
 Examples forthcoming...
 
-;My goal with the following examples is to give a flavor of the data and provide you with some code to get you started right away.  While these examples deserve some discussion, I strive to be as apolitical as possible with my interpretation.
+<!--- My goal with the following examples is to give a flavor of the data and provide you with some code to get you started right away.  While these examples deserve some discussion, I strive to be as apolitical as possible with my interpretation. --->
 
