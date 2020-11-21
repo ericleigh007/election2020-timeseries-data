@@ -1,2 +1,2 @@
-# 2020 election: Counties-President
+# 2020 election: counties-presidential
 
