@@ -1,2 +1,2 @@
-# 2020 election: county level presidential race data
+# 2020 election: Counties-President
 
