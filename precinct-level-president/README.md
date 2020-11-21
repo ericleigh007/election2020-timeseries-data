@@ -3,7 +3,7 @@ Timestamped 2020 presidential (general) election results for categorized by vote
 
 ## Data
 
-The (unofficial) election results data presented here is sourced from archived copies ([Internet Archive](https://web.archive.org)) of the NY Times Presidential Election Results [webpage](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html), which in turn obtained these data from the National Election Pool/Edison Research.  You may access this data by either downloading the gzipped `.csv` files in this repository, or by running the `election_results_extractor.py` Python script to scrape them from the Internet Archive yourself.  If you choose to collect the results yourself, be warned that it may take a few hours.
+You may access this (unofficial) election results dataset by either downloading the gzipped `.csv` files in this repository, or by running the `election_results_extractor.py` Python script to scrape them from the [Internet Archive](https://web.archive.org) yourself.  If you choose to collect the results yourself, be warned that it may take a few hours.
 
    *Note 0: The `.csv.gz` data files under the data/ directory are gzipped in order to stay under github.com's file size limits.  These are >90% compressed, so keep in mind that you will need ~1 GB of space to unzip them.*
 
