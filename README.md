@@ -1,4 +1,4 @@
-# election2020-timeseries-data
+# 2020 election: timeseries data
 Unofficial United States general election (2020) timeseries data scraped from archived copies of the NY Times election results webpages.
 
 ## Context
