@@ -1,6 +1,9 @@
 import requests
+import time
 import pandas as pd
 
+
+src_dir = ''
 
 states_list = ['Alaska', 'Alabama', 'Arkansas', 'Arizona', 'California', 
  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
@@ -109,14 +112,21 @@ def load_state_data(state):
         if int(url_group[4]) < 400:
             archived_urlA = 'http://web.archive.org/web/' + url_group[1] + 'if_/' + url_group[2]
             archived_urlB = 'http://web.archive.org/web/' + url_group[1] + '/' + url_group[2]
+            
+            download_start = time.time()
             try:
                 state_data = requests.get(archived_urlA).json()
-                print('Extracting data for {} at {}'.format(State_Str, archived_urlA))
+                print('Downloading {} data from {}'.format(State_Str, archived_urlA))
             except:
                 state_data = requests.get(archived_urlB).json()
-                print('Extracting data for {} at {}'.format(State_Str, archived_urlB))
+                print('Downloading {} data from {}'.format(State_Str, archived_urlB))
+            download_finish = time.time()
+            print('Download successful, took {:.1f} seconds'.format(download_finish - download_start))
             
             state_abbrv, vote_df = build_state_dataframe(state_data['data']['races'])
+            
+            print('Waiting 5x length of previous download as courtesy before continuing...')
+            time.sleep(5 * (download_finish - download_start))
             break
     
     return state_abbrv, vote_df
@@ -129,6 +139,6 @@ if __name__=='__main__':
 
     full_df = pd.concat(df_dict.values(), keys=df_dict.keys())
     full_df.index.rename(['state', 'race_id', 'date'], inplace=True)
-    full_df.to_csv('general_election2020_races_timeseries.csv')
+    full_df.to_csv(src_dir + '/' + 'election2020_house-senate-president.csv')
 
 
