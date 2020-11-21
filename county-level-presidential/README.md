@@ -25,7 +25,7 @@ The `county_presidential.csv` dataset should include data for all the counties a
  * `votes2012`          -- Number of total votes tallied for all presidential candidates in the 2012 general election 
  * `margin2012`         -- Percentage point difference between the Republican candidate and the Democrat presidential candidates in the 2012 general election
 
-   *Note 0: The `county_presidential.csv.gz` data file is gzipped in order to stay under github.com's file size limits. The uncompressed file takes about 5 MB of storage space.
+   *Note 0: The `county_presidential.csv.gz` data file is gzipped in order to stay under github.com's file size limits. The uncompressed file takes about 5 MB of storage space.*
 
 ## Examples
 
