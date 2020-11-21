@@ -6,9 +6,9 @@ Unofficial United States general election (2020) timeseries data scraped from ar
 The data is described briefly below and in more detail by the README files in each of the individual folders.  These datasets include various election race details that I have not found elsewhere.  The excellent [nyt-2020-election-scraper](https://github.com/alex/nyt-2020-election-scraper) project, for example, periodically scrapes the `https://static01.nyt.com/elections-assets/2020/data/api/2020-11-03/votes-remaining-page/national/president.json` page, but there are several other NY Times `.json` files for national and state elections worth exploring, and that project leaves untouched (to the best of my knowledge) the county-level data available in the page they do scrape.
 
 Here are links to the various data folders:
-1 [County-level presidential vote counting timeseries](/county-level-president/)
-2 [State-level house, senate, and presidential timeseries](/house-senate-president/)
-3 [Precinct-level presidential timeseries by vote type](/precinct-level-president/) (only for GA, FL, MI, NC, and PA)
+  1. [County-level presidential vote counting timeseries](/county-level-presidential/)
+  2. [State-level house, senate, and presidential timeseries](/house-senate-president/)
+  3. [Precinct-level presidential timeseries by vote type](/precinct-level-president/) (only for GA, FL, MI, NC, and PA)
 
 ## Context
 
