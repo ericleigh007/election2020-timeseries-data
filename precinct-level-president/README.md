@@ -82,7 +82,7 @@ ax.set_xlabel("Date/time (in 'mm-dd hh' format, UTC)")
 ax.legend(['Biden votes (in GA precincts Biden won)', 'Trump votes (in GA precincts Biden won)',
            'Biden votes (in GA precincts Biden lost)', 'Trump votes (in GA precincts Biden lost)'])
 ```
-![](images/example_fig1.png)
+![](./example_fig1.png)
 
 I've truncated the horizontal axis of this plot in order to highlight a particularly interesting region.  Notice how slightly after 6am UTC (i.e., after 1am EST) in the precincts where Biden won (which I will reference as "blue" precincts), both candidates observed an uptick in votes.  This suggests that the rate of reporting absentee ballots increased briefly (e.g., for <30 minutes).  Compare this to the sharp jump in votes for Biden from blue precincts at around 4am UTC.  Oddly, this sharp jump is not accompanied by a proportional jump for Trump (in the same precincts).  
 
@@ -116,7 +116,7 @@ plt.xlabel('Total absentee votes counted')
 plt.ylabel("Win(/loss) margin (for absentee ballots)")
 plt.legend()
 ```
-![](images/example_fig2.png)
+![](./example_fig2.png)
 
 Well, that's interesting!  Two things stand out to me.  First, the red diamonds show a steady downward trend in Trump's election day margin in the precincts he won.  The most innocuous reason for this that I could think of is that perhaps election day voters initially skew Republican and Democrat voters come out later in the day.  This assumes, of course, that most votes are counted in the order they were collected.  Even if this were true, however, the margin still declines at a noticeably steeper rate than it does in the equivalent plot for North Carolina (...try plotting NC yourself!).  A good way to get started playing with the data yourself would be to remake this plot with different vote types (e.g., absentee or early) to get started.
 
