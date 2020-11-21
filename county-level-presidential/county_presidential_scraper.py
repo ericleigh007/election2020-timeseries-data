@@ -1,4 +1,9 @@
+import requests
 import time
+import pandas as pd
+
+
+src_dir = ''
 
 def get_archived_county_results(race):
     assert race['race_id'][2:6] == '-G-P'
@@ -28,8 +33,7 @@ def get_archived_county_results(race):
     
     return race['state_id'], state_records
 
-
-def load_country_wide_county_data(csv_file_name):
+def extract_country_wide_county_data(csv_file_name):
     print('Searching for archived copies of the national U.S. presidential election results')
 
     archive_api_url = 'http://web.archive.org/cdx/search/cdx?url='
@@ -67,7 +71,6 @@ def load_country_wide_county_data(csv_file_name):
             except Exception as e:
                 print('Failed to extract data from {} with error: {}'.format(archived_url, str(e)))
 
-csv_file_name = '/Users/kaiser/pythonapps/us_county_timeseries_from_json.csv'
-n_df = load_country_wide_county_data(csv_file_name)
+extract_country_wide_county_data(src_dir + '/' + 'county_presidential.csv')
 
 
