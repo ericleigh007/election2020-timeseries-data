@@ -1,4 +1,4 @@
-# Election 2020 Precincts Time Series Data
+# 2020 election: precincts-president
 Timestamped 2020 presidential (general) election results for categorized by vote type (i.e., absentee, early, electionday, or provisional) for individual precincts and counties in the battleground states of FL, GA, MI, NC, and PA.
 
 ## Data
