@@ -1,6 +1,15 @@
 # 2020 election: timeseries data
 Unofficial United States general election (2020) timeseries data scraped from archived copies of the NY Times election results webpages.
 
+## Data
+
+The data is described briefly below and in more detail by the README files in each of the individual folders.  These datasets include various election race details that I have not found elsewhere.  The excellent [nyt-2020-election-scraper](https://github.com/alex/nyt-2020-election-scraper) project, for example, periodically scrapes the `https://static01.nyt.com/elections-assets/2020/data/api/2020-11-03/votes-remaining-page/national/president.json` page, but there are several other NY Times `.json` files for national and state elections worth exploring, and that project leaves untouched (to the best of my knowledge) the county-level data available in the page they do scrape.
+
+Here are links to the various data folders:
+1 [County-level presidential vote counting timeseries](/county-level-president/)
+2 [State-level house, senate, and presidential timeseries](/house-senate-president/)
+3 [Precinct-level presidential timeseries by vote type](/precinct-level-president/) (only for GA, FL, MI, NC, and PA)
+
 ## Context
 
 On election night (11/03/2020), most Americans went to sleep anticipating a surprising electoral victory for the Republican Party candidate, Donald Trump.  Less than four days later, however, Trump's lead in several key states had evaporated and the news media had crowned his main opponent, the Democrat Party candidate, Joe Biden, the winner.  Not one to give up without a fight, however, Trump and his campaign immediately cried foul, claiming that the late turn in the vote count toward Biden was the result of voter fraud, particularly in the handling of an unprecedented number (owing to the COVID-19 pandemic) of mail-in ballots.  While most Americans probably expect that some small degree of voter fraud occurs in every election, the large-scale and coordinated operation insinuated by the Trump campaign has never been documented.  Nevertheless, many on the right of the political spectrum, convinced that such fraud did occur, are searching for evidence to convince the courts and the public.  Meanwhile, others on the left are working to affirm the legitimacy of the election.
