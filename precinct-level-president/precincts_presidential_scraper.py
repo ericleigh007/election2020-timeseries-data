@@ -164,14 +164,17 @@ if __name__=='__main__':
                     json_urls.remove(url)
                     continue
 
+                download_start = time.time()
                 try:
-                    start_time = time.time()
                     load_data(url, state, out=precinct_records)
-                    print('Download successful.  Time elapsed was {:.1f} seconds.'.format(time.time() - start_time))
                     unique_src_urls.append(nyt_src_url)
                     json_urls.remove(url)
                 except IOError:
                     print('!!! Download failed for {}'.format(url))
+                download_finish = time.time()
+                print('Download successful, took {:.1f} seconds'.format(download_finish - download_start))
+                print('Waiting 5x length of previous download as courtesy before continuing...')
+                time.sleep(5 * (download_finish - download_start))
 
         if state in ('GA', 'NC'):
             results_df = streamline_data(precinct_records)
