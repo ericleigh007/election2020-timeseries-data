@@ -58,7 +58,7 @@ ax.set_xlabel("Date/time ('mm-dd hh' format)")
 ax.set_xlim([pd.Timestamp('2020-11-04T03'), pd.Timestamp('2020-11-04T09')])
 ax.set_ylim([11e5, 22e5])
 ```
-[](./example_fig3.png)
+![](./example_fig3.png)
 
 Actually, I plotted the vote counts across the whole state *and* the vote counts across all the VA counties and cities except for Fairfax County.  The reason should be evident in the plot.  Some really strange vote counting behaviour shows up in the full state counts and disappears without Fairfax.  Now that we've fingered Fairfax County as the culprit, let's take a closer look...
 
@@ -75,7 +75,7 @@ ax.set_xlabel("Date/time ('mm-dd hh' format)")
 ax.set_xlim([pd.Timestamp('2020-11-04T01'), pd.Timestamp('2020-11-04T09')])
 ax.set_ylim([-10000, 55e4])
 ```
-[](./example_fig4.png)
+![](./example_fig4.png)
 
 The window on this second figure starts two hours earlier than the previous figure, and you can see how to vote count seems to plateau around ~100k votes for each candidate with some strange spikes occuring in the middle.  I checked Fairfax County's election results webpage and found that the plateau agrees pretty well with the official election day vote tallies, while the second spike and subsequent plateau on the right side of the plot are consistent with the absentee ballots being counted as well.
 
