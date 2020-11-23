@@ -114,7 +114,7 @@ def remove_duplicates(csv_path):
 
 if __name__=='__main__':
     src_dir = ''   #you'll need to put the path to your data directory here
-    csv_path = Path(src_dir + '/' + 'county_presidential_test.csv')
+    csv_path = Path(src_dir + '/' + 'county_presidential.csv')
     scrape_national_pages(csv_path, all_pages=False)
     scrape_state_pages(csv_path)   #<-- !!!Warning this will take ~24 hours and only net ~12k original rows!!!
     remove_duplicates(csv_path)
