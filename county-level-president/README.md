@@ -4,7 +4,7 @@ Timeseries data for the U.S. 2020 presidential election race by county.  The dat
 
 ## Data
 
-The `county_presidential.csv` dataset should include data for all the counties and cities in the United States (except the District of Columbia, and I haven't actually verified that all the other counties *are* included).  You may download the dataset from here or scrape it yourself using the `county_presidential_scraper.py` script.  The dataset includes the following variables:
+The `county_presidential.csv` dataset (currently in the [county-level-presidential/](../county-level-presidential/) folder which is in the process of being moved to this folder) should include data for all the counties and cities in the United States (except the District of Columbia, and I haven't actually verified that all the other counties *are* included).  You may download the dataset from here or scrape it yourself using the `county_presidential_scraper.py` script.  The dataset includes the following variables:
 
  * `state`              -- The usual uppercase, two-letter state abbreviation (includes all 50 states)
  * `county`             -- The name of the election district (includes, e.g., counties and cities) in lower case and with spaces replaced by hyphens
