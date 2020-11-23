@@ -3,8 +3,6 @@ import time
 import pandas as pd
 
 
-src_dir = ''
-
 states_list = ['Alaska', 'Alabama', 'Arkansas', 'Arizona', 'California', 
  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
  'Hawaii', 'Iowa', 'Idaho', 'Illinois', 'Indiana', 'Kansas', 'Kentucky',
@@ -139,6 +137,7 @@ if __name__=='__main__':
 
     full_df = pd.concat(df_dict.values(), keys=df_dict.keys())
     full_df.index.rename(['state', 'race_id', 'date'], inplace=True)
+    src_dir = '.'
     full_df.to_csv(src_dir + '/' + 'election2020_house-senate-president.csv')
 
 
