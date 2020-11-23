@@ -6,11 +6,6 @@ import pandas as pd
 import numpy as np
 
 
-##########################################################################################
-#The src folder needs to be set here before the file i/o will work properly
-src_dir = ''
-##########################################################################################
-
 def extract_vote_record(state, timestamp, data_dict):
     vote_info = {}
     
@@ -142,6 +137,11 @@ def streamline_data(precinct_records, sum_counties=True):
 
 
 if __name__=='__main__':
+    ##########################################################################################
+    #The src folder needs to be set here before the file i/o will work properly
+    src_dir = '.'
+    ##########################################################################################
+
     json_urls_file = src_dir + '/' + 'archived_nyt_timestamped_precinct_urls.txt'
     json_urls_all = Path(json_urls_file).read_text().split()
 
