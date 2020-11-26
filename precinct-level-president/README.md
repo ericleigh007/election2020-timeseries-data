@@ -24,7 +24,8 @@ The `{*insert_state_abbrv*}_precincts_timeseries_2020.csv` datasets contain the 
 * `votes_trump`       -- The number of votes tallied for Donald Trump
 * `votes_jorgensen`   -- The number of votes tallied for Jo Jorgensen
 * `votes_other`       -- The number of votes tallied for other candidates (if any)
-* `margin`            -- The number of percentage points, i.e., `(votes_trump - votes_biden) / votes * 100`, by which Trump is leading Biden (negative if trailing).  This is computed at the last timestamp for the specified region (where "region" refers to a unique State-County-Precinct-Fips combination) and the preceeding timestamps are backfilled with this value.
+* `derived`           -- A boolean flag that is False if the vote counts come untouched from the archived NYT `.json` data or True if I derived the from the NYT vote counts.  Specifically, several instances exist where the NYT data does not include a 'total' votes count but splits the vote counts by (multiple) vote types.  The danger is that some vote types are occasionally missing or 'null' from the original data, which makes it unclear whether summing over the partial, valid data points provides a true 'total' or not.
+<!--- * `margin`            -- The number of percentage points, i.e., `(votes_trump - votes_biden) / votes * 100`, by which Trump is leading Biden (negative if trailing).  This is computed at the last timestamp for the specified region (where "region" refers to a unique State-County-Precinct-Fips combination) and the preceeding timestamps are backfilled with this value. --->
 
 ## Examples
 
