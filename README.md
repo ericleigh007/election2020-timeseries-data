@@ -3,6 +3,8 @@ Unofficial United States general election (2020) timeseries data scraped from ar
 
 ## Data
 
+**UPDATE:** The original precinct-level datasets were full of numerous missing data entries, due to a deficient scraper script.  These datasets have been replaced by more complete ones.  If you are using a prior version, the important point is that the prior datasets were *not* inaccurate, just incomplete.
+
 The data is described in depth by the README files in each of the individual folders linked to below.  Collectively, these datasets include various election race vote count details that I have not found elsewhere.  The excellent [nyt-2020-election-scraper](https://github.com/alex/nyt-2020-election-scraper) project, for example, periodically scrapes the NY Times "votes remaining" page, but leaves untouched (to the best of my knowledge) the county-level data available in that page.  Additionally, there are several other NY Times `.json` files for national and state elections worth exploring, as well as numerous copies of all these files archived by the [Internet Archive](https://web.archive.org/).
 
 Here are links to the various data folders:
