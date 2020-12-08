@@ -29,8 +29,6 @@ You may download the dataset included in the repository or compile it yourself b
 
 Recently, a [surveillance video](https://twitter.com/TeamTrump/status/1334569329334083586) showing election officials processing ballots pulled from suitcases stashed under tables in State Farm Arena, GA has gone viral.  Soon after, [an analysis](https://electionwiz.com/2020/12/04/biden-wins-98-percent-of-one-batch-of-23000-votes-in-georgia-during-suitcasegate/) of NY Times election data surfaced, which identified an approximately 23,000--24,000 vote count update at approximately 12:18 am EST, which gives Biden a minimum of 98% of the vote.  This represents more than enough votes to change the outcome of the GA presidential election (Biden currently leads by ~12,000 votes).  Strikingly, the number of votes entered at this suspiciously high ratio agrees with estimates<sup>[1](#myfootnote1)</sup> of the number of ballots present in the aforementioned suitcases.
 
-<a name="myfootnote1">1</a>: The estimates are based on ~2 hours of ballot counting (captured by the surveillance camera) and three machines that can process [3600 or 4900 ballots per hour](https://www.theepochtimes.com/state-farm-arena-footage-shows-poll-workers-staying-behind-pulling-out-suitcases-with-ballots_3603293.html?utm_source=newsnoe&utm_medium=email&utm_campaign=breaking-2020-12-03-3) and by estimates of the number of ballots each of the four suitcases could hold.
-
 While the video has become the subject of much debate (with many declaring it clear evidence of voter fraud, and others denying any furtive or illegal behavior), little attention has been paid to the corresponding statistical analysis.  Let's check and see if the data used for the original analysis matches the data contained in this repository (in the [/president-senate-house/election2020_house-senate-president.csv](/president-senate-house/election2020_house-senate-president.csv) dataset).
 
 ```Python
@@ -212,3 +210,6 @@ fig.suptitle('GA state-level vs. county-level dataset comparison')
 ![](./example_fig8.png)
 
 As you can see, the data align very closely.  I should add that this comparison returns poor results in the first 30-60 minutes of updates, which in my opinion, suggests that there is a lag in how the county level updates are filtered into the different NY Times database entries that these are datasets are drawn from (or, I suppose, it could be an issue with how Edison Research handles the data updates, since they are the source for the NY Times.)
+
+
+<a name="myfootnote1">1</a>: The estimates are based on ~2 hours of ballot counting (captured by the surveillance camera) and three machines that can process [3600 or 4900 ballots per hour](https://www.theepochtimes.com/state-farm-arena-footage-shows-poll-workers-staying-behind-pulling-out-suitcases-with-ballots_3603293.html?utm_source=newsnoe&utm_medium=email&utm_campaign=breaking-2020-12-03-3) and by estimates of the number of ballots each of the four suitcases could hold.
