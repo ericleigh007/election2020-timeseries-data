@@ -55,7 +55,8 @@ state_df['votes_extra'] = state_df['votes2020'] * state_df['vf_extra']
 
 #Get the number of votes added at each timestamp by differencing
 diff_keys = ['votes2020', 'votes_dem', 'votes_rep', 'votes_extra']
-state_df[diff_keys] = state_df.groupby('race_id').agg( dict(zip(diff_keys,                                                       ['diff']*len(diff_keys))) )
+state_df[diff_keys] = state_df.groupby('race_id').agg( dict(zip(diff_keys,
+                                                       ['diff']*len(diff_keys))) )
 
 #select the subset of state_df that pertains to the presidential race
 #...we'll use some of the other data later
@@ -80,6 +81,7 @@ ax.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' fo
 ax.set_ylabel('Vote counts')
 ax.set_title('GA state level vote updates')
 ```
+![](./example_fig5.png)
 
 The plot above showcases the NY Times data used isolate the >98% pro-Biden batch of ballots.  The strangest feature of this plot is that Trump appears to have received negative votes at 12:18 AM, which is the update in question.  While we have seen various examples of negative votes elsewhere (e.g., the viral Antrim County glitch, and the [Fairfax County, VA analysis](/county-level-president/) in this repository), they are highly irregular and each instance demands an explanation (because vote counts should only ever increase).  
 
@@ -133,6 +135,7 @@ for i, (index, county) in enumerate(trunc_cnty_df['county'].items()):
     text_y = -7500 - 15000 * ((i+1)%2)
     ax.text(text_x, text_y, county_label, rotation=-45, va='top', ha='left')
 ```
+![](./example_fig6.png)
 
 Here we see that Bibb County, which surrounds the city of Macon, GA and voted for Obama and Hillary by 20% margins in 2012 and 2016, is responsible for the previously identified anomalous update.  Fulton County, where the processing of suitcases of ballots was surveilled, updates shortly before 12:10 AM (EST) (and again at 12:55 AM), but not at the Biden:Trump ratio needed to explain the 12:18 AM update in the state-level data.  All the county updates shown here align neatly (along the time axis) with similar spikes in the state-level data (i.e., similar in terms of their total number of votes and their Biden:Trump ratio).  The only inconsistency is the Bibb County update, which appears to lag behind the state-level update by 6-7 minutes.  Not knowing how the vote reporting actually works, I can only speculate as to whether this is a benign reporting issue or an example of electronic vote manipulation.  As I show below, however, the state and county-level datasets match perfectly in this 1 hour snapshot with the sole exception being the Bibb County update.
 
@@ -143,6 +146,7 @@ In case you are not convinced by my plots, perhaps MSM broadcasts from election 
 ```Python
 trunc_cnty_df[['county', 'votes2020', 'votes_dem', 'votes_rep']]
 ```
+![](./table_fig1.png)
 
 Another angle we can use to shed light on the anomalous Bibb County update is a state-level comparison of how the presidential vote updates compare with the updates for down-ballot races.  Let's look in particular at the GA senatorial race between Perdue and Ossoff.
 
@@ -172,6 +176,7 @@ ax.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' fo
 ax.set_ylabel('Vote counts')
 ax.set_title('GA state level vote updates')
 ```
+![](./example_fig7.png)
 
 Okay, something clearly is wrong with the anomalous Bibb County update.  The updates for the incumbent republican senator, Perdue, closely track with Trump's vote updates, while the updates for his challenger, Ossoff, likewise mirror Biden's with the massive, lone exception of the 12:18 AM (EST) update.  Instead of producing a less than zero ratio similar to Trump:Biden, the Ossoff:Perdue ratio looks quite normal (yet radically different than Trump:Biden), and indeed is consistent with what we might expect for a county that voted for Obama and Hillary by a 20% margin.  Additionally, the number of votes for Perdue + Ossoff is on par with the total number of votes for Trump + Biden (if you treat the negative Trump votes as subtracting from Biden's total).
 
@@ -204,5 +209,6 @@ ax2.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' f
 ax2.set_ylabel('Vote counts')
 fig.suptitle('GA state-level vs. county-level dataset comparison')
 ```
+![](./example_fig8.png)
 
 As you can see, the data align very closely.  I should add that this comparison returns poor results in the first 30-60 minutes of updates, which in my opinion, suggests that there is a lag in how the county level updates are filtered into the different NY Times database entries that these are datasets are drawn from (or, I suppose, it could be an issue with how Edison Research handles the data updates, since they are the source for the NY Times.)
