@@ -22,11 +22,11 @@ Regardless of one's political leaning, perhaps we can all agree that allegations
 
 <!--- My goal with the following examples is to give a flavor of the data and provide you with some code to get you started right away.  While these examples deserve some discussion, I strive to be as apolitical as possible with my interpretation. --->
 
-*Note: all the following examples are contained in this [IPython notebook](/president-senate-house/election2020-timeseries-bibb-county-example.ipynb), which you can view rendered by clicking the hyperlink, or download and run examples yourself (with the relevant datasets available at the links in the Data section).  Also check out other examples in this repository [here](/county-level-president/README.md) and [here](/precinct-level-president/README.md).*
+*Note: all the following examples are contained in this [IPython notebook](/house-senate-president/election2020-timeseries-bibb-county-example.ipynb), which you can view rendered by clicking the hyperlink, or download and run examples yourself (with the relevant datasets available at the links in the Data section).  Also check out other examples in this repository [here](/county-level-president/README.md) and [here](/precinct-level-president/README.md).*
 
 Recently, a [surveillance video](https://twitter.com/TeamTrump/status/1334569329334083586) showing election officials processing ballots pulled from suitcases stashed under tables in State Farm Arena, GA has gone viral.  Soon after, [an analysis](https://electionwiz.com/2020/12/04/biden-wins-98-percent-of-one-batch-of-23000-votes-in-georgia-during-suitcasegate/) of NY Times election data surfaced, which identified an approximately 23,000--24,000 vote count update at approximately 12:18 am EST, which gives Biden a minimum of 98% of the vote.  This represents more than enough votes to change the outcome of the GA presidential election (Biden currently leads by ~12,000 votes).  Strikingly, the number of votes entered at this suspiciously high ratio agrees with estimates<sup>[1](#myfootnote1)</sup> of the number of ballots present in the aforementioned suitcases.
 
-While the video has become the subject of much debate (with many declaring it clear evidence of voter fraud, and others denying any furtive or illegal behavior), little attention has been paid to the corresponding statistical analysis.  Let's check and see if the data used for the original analysis matches the data contained in this repository (in the [/president-senate-house/election2020_house-senate-president.csv](/president-senate-house/election2020_house-senate-president.csv) dataset).
+While the video has become the subject of much debate (with many declaring it clear evidence of voter fraud, and others denying any furtive or illegal behavior), little attention has been paid to the corresponding statistical analysis.  Let's check and see if the data used for the original analysis matches the data contained in this repository (in the [/house-senate-president/election2020_house-senate-president.csv](/house-senate-president/election2020_house-senate-president.csv) dataset).
 
 ```Python
 #using Python for this analysis, import the necessary modules
@@ -76,7 +76,7 @@ ax.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' fo
 ax.set_ylabel('Vote counts')
 ax.set_title('GA state level vote updates')
 ```
-![](/president-senate-house/example_fig5.png)
+![](/house-senate-president/example_fig5.png)
 
 The plot above showcases the NY Times data used isolate the >98% pro-Biden batch of ballots.  The strangest feature of this plot is that Trump appears to have received negative votes at 12:18 AM, which is the update in question.  While we have seen various examples of negative votes elsewhere (e.g., the viral Antrim County glitch, and the [Fairfax County, VA analysis](/county-level-president/README.md) in this repository), they are highly irregular and each instance demands an explanation (because vote counts should only ever increase).  
 
@@ -130,7 +130,7 @@ for i, (index, county) in enumerate(trunc_cnty_df['county'].items()):
     text_y = -7500 - 15000 * ((i+1)%2)
     ax.text(text_x, text_y, county_label, rotation=-45, va='top', ha='left')
 ```
-![](/president-senate-house/example_fig6.png)
+![](/house-senate-president/example_fig6.png)
 
 Here we see that Bibb County, which surrounds the city of Macon, GA and voted for Obama and Hillary by 20% margins in 2012 and 2016, is responsible for the previously identified anomalous update.  Fulton County, where the processing of suitcases of ballots was surveilled, updates shortly before 12:10 AM (EST) (and again at 12:55 AM), but not at the Biden:Trump ratio needed to explain the 12:18 AM update in the state-level data.  All the county updates shown here align neatly (along the time axis) with similar spikes in the state-level data (i.e., similar in terms of their total number of votes and their Biden:Trump ratio).  The only inconsistency is the Bibb County update, which appears to lag behind the state-level update by 6-7 minutes.  Not knowing how the vote reporting actually works, I can only speculate as to whether this is a benign reporting issue or an example of electronic vote manipulation.  As I show below, however, the state and county-level datasets match perfectly in this 1 hour snapshot with the sole exception being the Bibb County update.
 
@@ -141,7 +141,7 @@ In case you are not convinced by my plots, perhaps MSM broadcasts from election 
 ```Python
 trunc_cnty_df[['county', 'votes2020', 'votes_dem', 'votes_rep']]
 ```
-![](/president-senate-house/table_fig1.png)
+![](/house-senate-president/table_fig1.png)
 
 Another angle we can use to shed light on the anomalous Bibb County update is a state-level comparison of how the presidential vote updates compare with the updates for down-ballot races.  Let's look in particular at the GA senatorial race between Perdue and Ossoff.
 
@@ -171,7 +171,7 @@ ax.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' fo
 ax.set_ylabel('Vote counts')
 ax.set_title('GA state level vote updates')
 ```
-![](/president-senate-house/example_fig7.png)
+![](/house-senate-president/example_fig7.png)
 
 Okay, something clearly is wrong with the anomalous Bibb County update.  The updates for the incumbent republican senator, Perdue, closely track with Trump's vote updates, while the updates for his challenger, Ossoff, likewise mirror Biden's with the massive, lone exception of the 12:18 AM (EST) update.  Instead of producing a less than zero ratio similar to Trump:Biden, the Ossoff:Perdue ratio looks quite normal (yet radically different than Trump:Biden), and indeed is consistent with what we might expect for a county that voted for Obama and Hillary by a 20% margin.  Additionally, the number of votes for Perdue + Ossoff is on par with the total number of votes for Trump + Biden (if you treat the negative Trump votes as subtracting from Biden's total).
 
@@ -204,7 +204,7 @@ ax2.set_xlabel("NY Times timestamps\n(Zulu time on Nov. 4, 2020, in 'DD HH:MM' f
 ax2.set_ylabel('Vote counts')
 fig.suptitle('GA state-level vs. county-level dataset comparison')
 ```
-![](/president-senate-house/example_fig8.png)
+![](/house-senate-president/example_fig8.png)
 
 As you can see, the data align very closely.  I should add that this comparison returns poor results in the first 30-60 minutes of updates, which in my opinion, suggests that there is a lag in how the county level updates are filtered into the different NY Times database entries that these are datasets are drawn from (or, I suppose, it could be an issue with how Edison Research handles the data updates, since they are the source for the NY Times.)
 
