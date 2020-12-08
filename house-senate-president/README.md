@@ -25,7 +25,7 @@ You may download the dataset included in the repository or compile it yourself b
 
 <!--- My goal with the following examples is to give a flavor of the data and provide you with some code to get you started right away.  While these examples deserve some discussion, I strive to be as apolitical as possible with my interpretation. --->
 
-*Note: You can download the IPython notebook and relevant datasets to run these examples yourself.
+*Note: You can download the [IPython notebook](./election2020-timeseries-bibb-county-example.ipynb) and relevant datasets to run these examples yourself.
 
 Recently, a [surveillance video](https://twitter.com/TeamTrump/status/1334569329334083586) showing election officials processing ballots pulled from suitcases stashed under tables in State Farm Arena, GA has gone viral.  Soon after, [an analysis](https://electionwiz.com/2020/12/04/biden-wins-98-percent-of-one-batch-of-23000-votes-in-georgia-during-suitcasegate/) of NY Times election data surfaced, which identified an approximately 23,000--24,000 vote count update at approximately 12:18 am EST, which gives Biden a minimum of 98% of the vote.  This represents more than enough votes to change the outcome of the GA presidential election (Biden currently leads by ~12,000 votes).  Strikingly, the number of votes entered at this suspiciously high ratio agrees with estimates<sup>[1](#myfootnote1)</sup> of the number of ballots present in the aforementioned suitcases.
 
