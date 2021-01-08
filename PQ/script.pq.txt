@@ -1,0 +1,183 @@
+
+
+section Section1;
+
+shared ga_test = (Path as text) as any =>
+let
+    Source = Path,
+    webContent = Web.Contents(Source),
+    Zips = fnGetZip(webContent),
+
+    // we know this is only file, and ours is the first one, thus {0}
+    Content = Zips{0}[Content],
+    Csv = Csv.Document(Content,[Delimiter=",", Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(Csv, [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"", Int64.Type}, {"state", type text}, {"county", type text}, {"precinct", type text}, {"fips", Int64.Type}, {"timestamp", type datetime}, {"vote_type", type text}, {"votes", Int64.Type}, {"votes_biden", Int64.Type}, {"votes_trump", Int64.Type}, {"votes_jorgensen", Int64.Type}, {"votes_other", Int64.Type}, {"derived", type logical}}),
+
+    // remove these columns to avoid pivot/unpivot complexities
+    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"derived", ""}),
+
+    // the table coming in has a vote-type column.  We want to make separate columns for each vote type instead.
+    // unpivot the columns containing the vote information
+    #"Unpivoted Columns" = Table.UnpivotOtherColumns(#"Removed Columns", {"state", "county", "precinct", "fips", "timestamp", "vote_type"}, "Attribute", "Value"),
+
+    // merge the columns that respresented the vote type and the attribute, so now we'll have absentee.votes_trump, for instance
+    #"Merged Columns" = Table.CombineColumns(#"Unpivoted Columns",{"vote_type", "Attribute"},Combiner.CombineTextByDelimiter(".", QuoteStyle.None),"Merged"),
+    // now pivot the merged column using the Value column value for each.
+    #"Pivoted Column" = Table.Pivot(#"Merged Columns", List.Distinct(#"Merged Columns"[Merged]), "Merged", "Value", List.Sum),
+
+    // Add an index that gives us the correct sort order for the table.  This can be used in DAX for getting previous row info if needed.
+    // for performance reasons, though, we're using the following code instead.
+    #"Added Index" = Table.AddIndexColumn(#"Pivoted Column", "Index", 0, 1, Int64.Type),
+    #"Added Custom" = Table.AddColumn(#"Added Index", "fips_and_precinct", each Number.ToText([fips]) & "-" & [precinct]),
+
+    // now some fancy footwork to get change values
+    // column names are all the ones that have "vote" in them    
+    voteColumns = List.Select( Table.ColumnNames( #"Added Custom"), each Text.Contains(_, "vote")),
+
+    // using Imke's script, add previous value columns by merging the table with itself with a row offset
+    #"with previous values" = fnAddPreviousValueColumns( #"Added Custom" ),
+
+    // Using List.Accumulate allows us to step through the columns we want to add and get the values from the 'votes' 
+    // and 'votes.Prev columns' ...
+    // Using Record.Field allows us to pass in the field names we want dynamically.
+    #"Change Columns" = List.Accumulate( voteColumns, #"with previous values", (state, current) => 
+            Table.AddColumn( state, current & "_change", 
+                each if [fips_and_precinct] = [fips_and_precinct.Prev] then 
+                    Record.Field(_, current) - Record.Field(_, current & ".Prev") else 0))
+in
+    #"Change Columns";
+
+shared fnAddPreviousValueColumns = let func =   
+ (Table as table, optional Step as number, optional SelectedColumns, optional GroupByColumns, optional Suffix as text, optional Buffer as any) =>
+
+let
+// Steps to prepare the (optional) parameters for the nested function "fnFetchNextRow"
+    Source = if Buffer = null then Table else Table.Buffer(Table),
+    Step0 = if Step = null then -1 else Step,
+    Step_ = if Step = null then 1 else Number.Abs(Step),
+    Suffix = if Suffix = null then ".Prev" else Suffix,
+    GroupByColumns = if GroupByColumns = null then null else GroupByColumns,
+    ShiftFunction = if Step0 < 0 then Table.RemoveLastN else Table.RemoveFirstN,
+    ColNames = List.Buffer(Table.ColumnNames(Source)),
+    NewColNames = if SelectedColumns = null then ColNames else SelectedColumns,
+    CountNewCols = List.Count(NewColNames),
+
+// Core function that retrieves values from previous or next rows (depending on sign of parameter "Step")
+    fnFetchNextRow = (Table_ as table, optional Step as number, optional SelectedColumns, optional Suffix as text, optional Buffer as any) =>
+        let
+            MergeTable = if SelectedColumns = null then Table_ else Table.SelectColumns(Table_, SelectedColumns),
+            Shift = if Step0 > 0 then ShiftFunction(MergeTable, Step_) & #table(NewColNames, List.Repeat({List.Repeat({null}, CountNewCols)}, Step_))
+                                else #table(NewColNames, List.Repeat({List.Repeat({null}, CountNewCols)}, Step_)) & ShiftFunction(MergeTable, Step_),
+            Reassemble = Table.ToColumns(Table_) & Table.ToColumns(Shift), 
+            Custom1 = Table.FromColumns( Reassemble,  Table.ColumnNames(Source) & List.Transform(NewColNames, each _&Suffix ) )
+        in
+            Custom1,
+
+// optional grouping on certain columns
+    #"Grouped Rows" = Table.Group(Source, GroupByColumns, {{"All", each _}}, GroupKind.Local),
+    #"Added Custom" = Table.AddColumn(#"Grouped Rows", "Custom", each fnFetchNextRow([All], Step0, SelectedColumns, Suffix, Buffer)),
+    #"Removed Columns" = Table.Combine(Table.RemoveColumns(#"Added Custom", GroupByColumns & {"All"})[Custom]),
+
+// case no grouping
+    NoGroup = fnFetchNextRow(Source, Step0, SelectedColumns, Suffix, Buffer),
+
+// select case grouping
+    Result = if GroupByColumns = null then NoGroup else #"Removed Columns"
+in
+    Result ,
+documentation = [
+Documentation.Name =  " Table.ReferenceDifferentRow ",
+Documentation.Description = " Adds columns to a <code>Table</code> with values from previous or next rows (according to the <code>Step</code>-index in the 2nd parameter) ",
+Documentation.LongDescription = " Adds columns to a <code>Table</code> with values from previous or next rows (according to the <code>Step</code>-index in the 2nd parameter) ",
+Documentation.Category = " Table ",
+Documentation.Source = "  ",
+Documentation.Version = " 1.0 ",
+Documentation.Author = " Imke Feldmann (www.TheBIccountant.com ) ",
+Documentation.Examples = {[Description =  "  ",
+Code = " fnTable_ReferenceDifferentRow( #table( {""Product"", ""Value""}, List.Zip( { {""A"" ,""A"" ,""B"" ,""B"" ,""B""}, {""1"" ,""2"" ,""3"" ,""4"" ,""5""} } ) ) ) ",
+Result = " #table( {""Product"", ""Value"", ""Product.Prev"", ""Value.Prev""}, List.Zip( { {""A"" ,""A"" ,""B"" ,""B"" ,""B""}, {""1"" ,""2"" ,""3"" ,""4"" ,""5""}, {null ,""A"" ,""A"" ,""B"" ,""B""}, {null ,""1"" ,""2"" ,""3"" ,""4""} } ) ) "]}]
+  
+ in  
+  Value.ReplaceType(func, Value.ReplaceMetadata(Value.Type(func), documentation));
+
+shared fnTransformColumns = let func =   
+ (Table as table, Function, TypeForColumns as type, optional ColumnNames as list) =>
+let
+    columnNames = if ColumnNames = null then Table.ColumnNames(Table) else ColumnNames,
+    Transformation = Table.TransformColumns( Table, List.Transform(columnNames, each {_, Function, TypeForColumns} ) )
+in
+    Transformation ,
+documentation = [
+Documentation.Name =  " Table.TransformAllColumns.pq ",
+Documentation.Description = " Transforms all columns of a <code>table</code>  with one <code>function</code> and one <code>type</code>. ",
+Documentation.LongDescription = " Transforms all columns of a <code>table</code> with one <code>function</code> and one <code>type</code>. Optionial <code>ColumnNames</code> to limit to a specific list. ",
+Documentation.Category = " Table ",
+Documentation.Source = " www.TheBIccountant.com https://wp.me/p6lgsG-2dQ .   ",
+Documentation.Version = " 1.0 ",
+Documentation.Author = " Imke Feldmann ",
+Documentation.Examples = {[Description =  "  ",
+Code = " TableTransformAllColumns( #table( {""TextColumn1"", ""TextColumn2""}, List.Zip( { {""123<code>456</code>"" ,""789<code>101</code>""}, {""ABC<code>DEF</code>"" ,""GHI<code>JKL</code>""} } ) ), fnRemoveHtmlTags, type text) ",
+Result = " #table( {""TextColumn1"", ""TextColumn2""}, List.Zip( { {""123456"" ,""789101""}, {""ABCDEF"" ,""GHIJKL""} } ) ) "]}]
+  
+ in  
+  Value.ReplaceType(func, Value.ReplaceMetadata(Value.Type(func), documentation))  ;
+
+shared fnGetZip = (ZIPFile) => 
+let
+    Header = BinaryFormat.Record([
+        MiscHeader = BinaryFormat.Binary(14),
+        BinarySize = BinaryFormat.ByteOrder(BinaryFormat.UnsignedInteger32, ByteOrder.LittleEndian),
+        FileSize   = BinaryFormat.ByteOrder(BinaryFormat.UnsignedInteger32, ByteOrder.LittleEndian),
+        FileNameLen= BinaryFormat.ByteOrder(BinaryFormat.UnsignedInteger16, ByteOrder.LittleEndian),
+        ExtrasLen  = BinaryFormat.ByteOrder(BinaryFormat.UnsignedInteger16, ByteOrder.LittleEndian)    
+    ]),
+ 
+    HeaderChoice = BinaryFormat.Choice(
+        BinaryFormat.ByteOrder(BinaryFormat.UnsignedInteger32, ByteOrder.LittleEndian),
+        each if _ <> 67324752             // not the IsValid number? then return a dummy formatter
+            then BinaryFormat.Record([IsValid = false, Filename=null, Content=null])
+            else BinaryFormat.Choice(
+                    BinaryFormat.Binary(26),      // Header payload - 14+4+4+2+2
+                    each BinaryFormat.Record([
+                        IsValid  = true,
+                        Filename = BinaryFormat.Text(Header(_)[FileNameLen]), 
+                        Extras   = BinaryFormat.Text(Header(_)[ExtrasLen]), 
+                        Content  = BinaryFormat.Transform(
+                            BinaryFormat.Binary(Header(_)[BinarySize]),
+                            (x) => try Binary.Buffer(Binary.Decompress(x, Compression.Deflate)) otherwise null
+                        )
+                        ]),
+                        type binary                   // enable streaming
+                )
+    ),
+ 
+    ZipFormat = BinaryFormat.List(HeaderChoice, each _[IsValid] = true),
+ 
+    Entries = List.Transform(
+        List.RemoveLastN( ZipFormat(ZIPFile), 1),
+        (e) => [FileName = e[Filename], Content = e[Content] ]
+    )
+in
+    Table.FromRecords(Entries);
+
+shared Query1 = let
+    Source = Web.Contents("https://github.com/ericleigh007/election2020-timeseries-data/raw/main/precinct-level-president/GA_precincts_timeseries_2020_processed.zip"),
+//    Source = File.Contents("C:\Users\ericl\source\repos\election2020-timeseries-data\precinct-level-president\GA_precincts_timeseries_2020_processed.zip"),
+    output = fnGetZip( Source ),
+    Content = output{0}[Content],
+    #"Imported CSV" = Csv.Document(Content,[Delimiter=",", Columns=13, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+    #"Promoted Headers" = Table.PromoteHeaders(#"Imported CSV", [PromoteAllScalars=true]),
+    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"", Int64.Type}, {"state", type text}, {"county", type text}, {"precinct", type text}, {"fips", Int64.Type}, {"timestamp", type datetime}, {"vote_type", type text}, {"votes", Int64.Type}, {"votes_biden", Int64.Type}, {"votes_trump", Int64.Type}, {"votes_jorgensen", Int64.Type}, {"votes_other", Int64.Type}, {"derived", type logical}})
+in
+    #"Changed Type";
+
+shared #"Invoked Function" = let
+    Source = ga_test("https://github.com/ericleigh007/election2020-timeseries-data/blob/main/precinct-level-president/GA_precincts_timeseries_2020.csv.gz?raw=true")
+in
+    Source;
+
+shared #"Invoked Function (2)" = let
+    Source = ga_test("https://github.com/ericleigh007/election2020-timeseries-data/raw/main/precinct-level-president/GA_precincts_timeseries_2020_processed.zip")
+in
+    Source;
